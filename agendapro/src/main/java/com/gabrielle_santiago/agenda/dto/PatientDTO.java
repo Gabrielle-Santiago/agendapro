@@ -1,12 +1,13 @@
 package com.gabrielle_santiago.agenda.dto;
 
+import java.time.LocalDate;
+
+import org.springframework.data.annotation.Id;
+
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
-
-import java.util.Date;
 
 @Getter
 @Setter
@@ -15,13 +16,10 @@ public class PatientDTO extends PeopleDTO {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
-    private String passwd;
+    private String describe;
 
-    public PatientDTO(String name, int number, String cpf, Date dateBrith, String email, String username, String passwd) {
+    public PatientDTO(String name, int number, String cpf, LocalDate dateBrith, String email, String describe) {
         super(name, number, cpf, dateBrith, email);
-        this.username = username;
-        this.passwd = passwd;
+        this.describe = describe;
     }
-
 }

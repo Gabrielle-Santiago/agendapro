@@ -1,13 +1,13 @@
 package com.gabrielle_santiago.agenda.entity;
 
+import java.time.LocalDate;
+
+import com.gabrielle_santiago.agenda.authentication.UserRole;
+
 import jakarta.persistence.*;
-import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
-
 @Entity
-@Getter
 @Setter
 @DiscriminatorValue("patients")
 public class PatientEntity extends PeopleEntity {
@@ -16,15 +16,18 @@ public class PatientEntity extends PeopleEntity {
     @Column(nullable = false)
     private Long id;
 
-    private String username;
-    private String passwd;
+    private String describe;
 
-    public PatientEntity(){}
-
-    public PatientEntity(String name, int number, String cpf, Date dateBrith, String email, String username, String passwd) {
-        super(name, number, cpf, dateBrith, email);
-        this.username = username;
-        this.passwd = passwd;
+    public String getDescribe() {
+        return describe;
     }
 
+    public PatientEntity(){
+        super();
+    }
+     
+    public PatientEntity(String name, String username, String passwd, String email, int contact_number, String cpf, LocalDate dateBirth, UserRole role, String describe) {
+        super(name, username, passwd, email, contact_number, cpf, dateBirth, role);
+        this.describe = describe;
+    }
 }

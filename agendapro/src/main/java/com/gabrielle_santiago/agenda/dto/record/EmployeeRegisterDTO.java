@@ -1,0 +1,17 @@
+package com.gabrielle_santiago.agenda.dto.record;
+
+import java.time.LocalDate;
+
+import com.gabrielle_santiago.agenda.authentication.UserRole;
+
+public record EmployeeRegisterDTO(
+    String username,
+    String passwd, 
+    String email,
+    UserRole role,
+    String name,
+    int contact_number,
+    String cpf,
+    LocalDate dateBirth,
+    String proof
+) {}

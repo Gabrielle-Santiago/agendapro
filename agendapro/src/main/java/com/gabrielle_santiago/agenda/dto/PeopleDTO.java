@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -18,10 +18,10 @@ public class PeopleDTO {
     private String name;
     private int number;
     private String cpf;
-    private Date dateBrith;
+    private LocalDate dateBrith;
     private String email;
 
-    public PeopleDTO(String name, int number, String cpf, Date dateBrith, String email) {
+    public PeopleDTO(String name, int number, String cpf, LocalDate dateBrith, String email) {
         this.name = name;
         this.number = number;
         this.cpf = cpf;

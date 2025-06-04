@@ -1,24 +1,25 @@
 package com.gabrielle_santiago.agenda.dto;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import java.time.LocalDate;
+
 import org.springframework.data.annotation.Id;
 
-import java.util.Date;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class EmployeeDTO extends PeopleDTO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String role;
     private String proof;
-    private String username;
-    private String passwd;
 
-    public EmployeeDTO(String name, int number, String cpf, Date dateBrith, String email, String role, String proof) {
+    public EmployeeDTO(String name, int number, String cpf, LocalDate dateBrith, String email, String proof) {
         super(name, number, cpf, dateBrith, email);
-        this.role = role;
         this.proof = proof;
     }
 
