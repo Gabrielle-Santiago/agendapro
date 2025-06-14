@@ -26,6 +26,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/register/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/register/patient").permitAll()
                         .requestMatchers(HttpMethod.POST, "/register/employee").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/calendar/authorize").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/calendar/create").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();

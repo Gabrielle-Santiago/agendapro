@@ -1,10 +1,10 @@
-package com.gabrielle_santiago.agenda.dto.record;
+package com.gabrielle_santiago.agenda.dto.request;
 
 import java.time.LocalDate;
 
 import com.gabrielle_santiago.agenda.authentication.UserRole;
 
-public record PatientRegisterDTO(
+public record EmployeeRegisterDTO(
     String username,
     String passwd, 
     String email,
@@ -13,6 +13,5 @@ public record PatientRegisterDTO(
     int contact_number,
     String cpf,
     LocalDate dateBirth,
-    String describe
+    String proof
 ) {}
-

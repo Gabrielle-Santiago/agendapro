@@ -3,7 +3,7 @@ package com.gabrielle_santiago.agenda.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.gabrielle_santiago.agenda.dto.record.EmployeeRegisterDTO;
+import com.gabrielle_santiago.agenda.dto.request.EmployeeRegisterDTO;
 import com.gabrielle_santiago.agenda.entity.EmployeeEntity;
 
 @Mapper(componentModel = "spring")

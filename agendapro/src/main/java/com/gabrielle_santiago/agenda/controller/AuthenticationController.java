@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gabrielle_santiago.agenda.dto.record.EmployeeRegisterDTO;
-import com.gabrielle_santiago.agenda.dto.record.PatientRegisterDTO;
+import com.gabrielle_santiago.agenda.dto.request.EmployeeRegisterDTO;
+import com.gabrielle_santiago.agenda.dto.request.PatientRegisterDTO;
 import com.gabrielle_santiago.agenda.dto.request.AuthenticationDTO;
 import com.gabrielle_santiago.agenda.dto.request.LoginDTO;
 import com.gabrielle_santiago.agenda.entity.EmployeeEntity;
