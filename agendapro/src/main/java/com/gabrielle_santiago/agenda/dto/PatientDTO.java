@@ -18,7 +18,7 @@ public class PatientDTO extends PeopleDTO {
 
     private String describe;
 
-    public PatientDTO(String name, int number, String cpf, LocalDate dateBrith, String email, String describe) {
+    public PatientDTO(String name, String number, String cpf, LocalDate dateBrith, String email, String describe) {
         super(name, number, cpf, dateBrith, email);
         this.describe = describe;
     }

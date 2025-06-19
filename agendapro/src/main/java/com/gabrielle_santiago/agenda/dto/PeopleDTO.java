@@ -16,12 +16,12 @@ public class PeopleDTO {
     private Long id;
 
     private String name;
-    private int number;
+    private String number;
     private String cpf;
     private LocalDate dateBrith;
     private String email;
 
-    public PeopleDTO(String name, int number, String cpf, LocalDate dateBrith, String email) {
+    public PeopleDTO(String name, String number, String cpf, LocalDate dateBrith, String email) {
         this.name = name;
         this.number = number;
         this.cpf = cpf;

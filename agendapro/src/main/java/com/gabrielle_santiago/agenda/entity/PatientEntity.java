@@ -26,7 +26,7 @@ public class PatientEntity extends PeopleEntity {
         super();
     }
      
-    public PatientEntity(String name, String username, String passwd, String email, int contact_number, String cpf, LocalDate dateBirth, UserRole role, String describe) {
+    public PatientEntity(String name, String username, String passwd, String email, String contact_number, String cpf, LocalDate dateBirth, UserRole role, String describe) {
         super(name, username, passwd, email, contact_number, cpf, dateBirth, role);
         this.describe = describe;
     }

@@ -3,15 +3,25 @@ package com.gabrielle_santiago.agenda.dto.request;
 import java.time.LocalDate;
 
 import com.gabrielle_santiago.agenda.authentication.UserRole;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 public record PatientRegisterDTO(
     String username,
-    String passwd, 
+    String passwd,
+
+    @Email(message = "Email must be a valid email address.")
+    @NotBlank(message = "Email is required.")
     String email,
+
     UserRole role,
     String name,
-    int contact_number,
+    String contact_number,
+
+    @Pattern(regexp = "^\\d{11}$", message = "The CPF must contain exactly 11 numeric digits.")
     String cpf,
+
     LocalDate dateBirth,
     String describe
 ) {}

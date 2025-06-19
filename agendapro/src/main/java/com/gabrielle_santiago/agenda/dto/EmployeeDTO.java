@@ -18,7 +18,7 @@ public class EmployeeDTO extends PeopleDTO {
 
     private String proof;
 
-    public EmployeeDTO(String name, int number, String cpf, LocalDate dateBrith, String email, String proof) {
+    public EmployeeDTO(String name,  String number, String cpf, LocalDate dateBrith, String email, String proof) {
         super(name, number, cpf, dateBrith, email);
         this.proof = proof;
     }

@@ -40,13 +40,13 @@ public abstract class PeopleEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role;
     private String name;
-    private int contact_number;
+    private String contact_number;
     private String cpf;
     private LocalDate dateBirth;  
 
     public PeopleEntity(){}
 
-    public PeopleEntity(String name, String username, String passwd, String email, int contact_number, String cpf, LocalDate dateBirth, UserRole role) {
+    public PeopleEntity(String name, String username, String passwd, String email, String contact_number, String cpf, LocalDate dateBirth, UserRole role) {
         this.name = name;
         this.username = username;
         this.passwd = passwd;
