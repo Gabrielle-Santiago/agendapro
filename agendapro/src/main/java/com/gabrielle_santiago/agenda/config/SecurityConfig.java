@@ -28,6 +28,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/register/employee").permitAll()
                         .requestMatchers(HttpMethod.GET, "/calendar/authorize").permitAll()
                         .requestMatchers(HttpMethod.POST, "/calendar/create").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/consultations/available-slots").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/consultations/create").permitAll()
                         .requestMatchers("/websocket/**", "/topic/**", "/app/**").permitAll()
                         .anyRequest().authenticated()
                 )
