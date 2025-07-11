@@ -2,10 +2,9 @@ package com.gabrielle_santiago.agenda.dto;
 
 import java.time.LocalDate;
 
-import org.springframework.data.annotation.Id;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +12,8 @@ import lombok.Setter;
 @Setter
 public class EmployeeDTO extends PeopleDTO {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
+    @Column(nullable = false, updatable = false)
     private Long id;
 
     private String proof;

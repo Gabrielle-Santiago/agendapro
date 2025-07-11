@@ -4,22 +4,13 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.gabrielle_santiago.agenda.authentication.UserRole;
 
-import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,8 +22,9 @@ import lombok.Setter;
 @DiscriminatorColumn(name = "people")
 public abstract class PeopleEntity implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
+    private Long id;
 
     private String username;
     private String passwd;
@@ -59,8 +51,8 @@ public abstract class PeopleEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.role == UserRole.PATIENT) return List.of(new SimpleGrantedAuthority("patient"), new SimpleGrantedAuthority("employee"));
-        else return List.of(new SimpleGrantedAuthority("employee"));
+        if(this.role == UserRole.ROLE_PATIENT) return List.of(new SimpleGrantedAuthority("rolePatient"), new SimpleGrantedAuthority("roleEmployee"));
+        else return List.of(new SimpleGrantedAuthority("roleEmployee"));
     }
 
     @Override

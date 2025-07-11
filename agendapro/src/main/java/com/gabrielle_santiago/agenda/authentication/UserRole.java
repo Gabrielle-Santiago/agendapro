@@ -1,8 +1,8 @@
 package com.gabrielle_santiago.agenda.authentication;
 
 public enum UserRole {
-    EMPLOYEE("employee"),
-    PATIENT("patient");
+    ROLE_EMPLOYEE("roleEmployee"),
+    ROLE_PATIENT("rolePatient");
 
     private final String role;
 

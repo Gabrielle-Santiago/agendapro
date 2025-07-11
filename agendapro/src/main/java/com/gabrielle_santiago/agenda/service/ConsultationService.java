@@ -2,17 +2,20 @@ package com.gabrielle_santiago.agenda.service;
 
 import com.gabrielle_santiago.agenda.component.ValidationTimeCommercialConsultation;
 import com.gabrielle_santiago.agenda.dto.request.ConsultationDTO;
-import com.gabrielle_santiago.agenda.entity.ConsultationEntity;
+import com.gabrielle_santiago.agenda.dto.request.ConsultationSummaryDTO;
+import com.gabrielle_santiago.agenda.entity.*;
 import com.gabrielle_santiago.agenda.exceptions.ConsultationTimeException;
+import com.gabrielle_santiago.agenda.exceptions.PatientNotFoundException;
 import com.gabrielle_santiago.agenda.mapper.ConsultationMapper;
-import com.gabrielle_santiago.agenda.repository.ConsultationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.gabrielle_santiago.agenda.repository.*;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,21 +23,29 @@ import java.util.List;
 public class ConsultationService {
     private final ConsultationRepository consultationRepository;
     private final ValidationTimeCommercialConsultation validationTime;
-    private static final LocalTime BUSINESS_START_TIME = LocalTime.of(8, 0);
-    private static final LocalTime BUSINESS_END_TIME = LocalTime.of(18, 0);
-    private static final int CONSULTATION_DURATION_MINUTES = 40;
-    private static final int BREAK_TIME_MINUTES = 20;
+    private static final LocalTime bussinesStartTime = LocalTime.of(8, 0);
+    private static final LocalTime bussinesEndTime = LocalTime.of(18, 0);
+    private static final int consultationDurationMinutes = 40;
+    private static final int breakTimeMinutes = 20;
 
     @Autowired
     private ConsultationMapper consultationMapper;
 
     @Autowired
-    public ConsultationService(ConsultationRepository consultationRepository, ValidationTimeCommercialConsultation validationTime){
+    private PatientRepository patientRepository;
+
+    @Autowired
+    public ConsultationService(ConsultationRepository consultationRepository,
+                               ValidationTimeCommercialConsultation validationTime,
+                               ConsultationMapper consultationMapper,
+                               PatientRepository patientRepository) {
         this.consultationRepository = consultationRepository;
         this.validationTime = validationTime;
+        this.consultationMapper = consultationMapper;
+        this.patientRepository = patientRepository;
     }
 
-    public List<LocalDateTime> getAvailableSlots(LocalDate date, String resourceId){
+    public List<LocalDateTime> getAvailableSlots(LocalDate date, String employeeId){
         if(date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY){
             return new ArrayList<>();
         }
@@ -47,11 +58,11 @@ public class ConsultationService {
         LocalDateTime startOfDay = date.atStartOfDay();
         LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
         List<ConsultationEntity> existingAppointments =
-                consultationRepository.findByResourceIdAndStartConsultationBetween(resourceId, startOfDay, endOfDay);
+                consultationRepository.findByEmployeeIdAndStartConsultationBetween(employeeId, startOfDay, endOfDay);
 
         List<LocalDateTime> availableSlots = new ArrayList<>();
         for (LocalDateTime slotStart : allPossibleSlots) {
-            LocalDateTime slotEnd = slotStart.plusMinutes(CONSULTATION_DURATION_MINUTES);
+            LocalDateTime slotEnd = slotStart.plusMinutes(consultationDurationMinutes);
             boolean isAvailable = true;
             for (ConsultationEntity existing : existingAppointments) {
                 if (slotStart.isBefore(existing.getEndConsultation()) && slotEnd.isAfter(existing.getStartConsultation())) {
@@ -68,36 +79,61 @@ public class ConsultationService {
 
     private List<LocalDateTime> generateAllPossibleSlots(LocalDate date) {
         List<LocalDateTime> slots = new ArrayList<>();
-        LocalDateTime currentSlotStart = date.atTime(BUSINESS_START_TIME);
-        LocalDateTime businessEndDateTime = date.atTime(BUSINESS_END_TIME);
+        LocalDateTime currentSlotStart = date.atTime(bussinesStartTime);
+        LocalDateTime businessEndDateTime = date.atTime(bussinesEndTime);
 
         while (currentSlotStart.isBefore(businessEndDateTime)) {
-            LocalDateTime slotEnd = currentSlotStart.plusMinutes(CONSULTATION_DURATION_MINUTES);
+            LocalDateTime slotEnd = currentSlotStart.plusMinutes(consultationDurationMinutes);
             if (!slotEnd.isAfter(businessEndDateTime)) {
                 slots.add(currentSlotStart);
             } else {
                 break;
             }
-            currentSlotStart = slotEnd.plusMinutes(BREAK_TIME_MINUTES);
+            currentSlotStart = slotEnd.plusMinutes(breakTimeMinutes);
         }
         return slots;
     }
 
-    public void create(ConsultationDTO consultationDTO){
-        validationTime.valid(consultationDTO);
+    @Transactional
+    public ConsultationEntity create(ConsultationDTO dto){
+        createHoursConsultation(dto);
+        getLoggedInUserId();
+        validatePatientExists(dto.patientId());
 
-        LocalDateTime slotStart = consultationDTO.startConsultation();
-        LocalDateTime slotEnd = consultationDTO.endConsultation();
-        String resourceId = consultationDTO.resourceId();
+        ConsultationEntity entity = consultationMapper.toEntity(dto);
+        return consultationRepository.save(entity);
+    }
+
+    public void createHoursConsultation(ConsultationDTO dto) {
+        validationTime.valid(dto);
+
+        LocalDateTime slotStart = dto.startConsultation();
+        LocalDateTime slotEnd = dto.endConsultation();
+        String employeeId = dto.employeeId();
 
         List<ConsultationEntity> conflitConsultation =
-                consultationRepository.findConflictingConsultations(resourceId, slotStart, slotEnd);
+                consultationRepository.findConflictingConsultations(employeeId, slotStart, slotEnd);
 
-        if(!conflitConsultation.isEmpty()){
+        if (!conflitConsultation.isEmpty()) {
             throw new ConsultationTimeException("The selected time is no longer available. Please try again!");
         }
+    }
 
-        ConsultationEntity entity = consultationMapper.toEntity(consultationDTO);
-        consultationRepository.save(entity);
+    private Long getLoggedInUserId(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof PeopleEntity){
+            PeopleEntity loggedInUser = (PeopleEntity) authentication.getPrincipal();
+            return loggedInUser.getId();
+        }
+        return null;
+    }
+
+    private PatientEntity validatePatientExists(Long patientId) {
+        return patientRepository.findById(patientId)
+                .orElseThrow(() -> new PatientNotFoundException("Patient with ID " + patientId + " not found."));
+    }
+
+    public List<ConsultationSummaryDTO> getAllConsultations() {
+        return consultationRepository.findAllConsultations();
     }
 }

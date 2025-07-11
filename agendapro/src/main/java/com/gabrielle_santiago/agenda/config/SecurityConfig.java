@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/calendar/create").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/consultations/available-slots").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/consultations/create").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/consultations/allConsultations").permitAll()
                         .requestMatchers("/websocket/**", "/topic/**", "/app/**").permitAll()
                         .anyRequest().authenticated()
                 )
